@@ -75,7 +75,9 @@ public class Editor {
         while ((s = EDLineEditor.br.readLine()) != null){
             if (s.equals(".")){
                 textAsList.addRows(isAddAfter?row+1:row==-1?0:row,addList);
-                textAsList.setIndexRow(addList.getLast());
+                if (addList.size()!=0) {
+                    textAsList.setIndexRow(addList.getLast());
+                }
                 pushAndState(textAsList);
                 break;
             }
