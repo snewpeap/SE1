@@ -100,7 +100,9 @@ public class Editor {
             if (s.equals(".")) {
                 textAsList.addRows(fromIndex,changeList);
                 textAsList.deleteRows(fromIndex+changeList.size(),toIndex+changeList.size());
-                textAsList.setIndexRow(changeList.getLast());
+                if (changeList.size()!=0){
+                    textAsList.setIndexRow(changeList.getLast());
+                }
                 pushAndState(textAsList);
                 break;
             }
