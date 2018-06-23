@@ -4,6 +4,7 @@ import java.io.*;
 
 public class EDLineEditor {
     public static BufferedReader br;
+    public static boolean printFile = false;
 
 	private static String fileName;
 	public static String getFileName() {
@@ -14,6 +15,7 @@ public class EDLineEditor {
 	}
 
 	public static void main(String[] args){
+	    printFile = false;
 		fileName = "";
 		Editor editor = new Editor();
 		Invoker invoker = new Invoker();
@@ -26,6 +28,7 @@ public class EDLineEditor {
                         .concat("|test214u").concat("|test225together").concat("|test206k");
                 if (Thread.currentThread().getStackTrace()[2].getMethodName().matches(match)){
                     System.out.println(">>>>>>>>>>"+nextCmd);
+                    printFile = true;
                 }
                 try {
                     Command command = invoker.getCommand(nextCmd);
