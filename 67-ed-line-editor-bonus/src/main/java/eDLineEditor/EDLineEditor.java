@@ -1,19 +1,36 @@
 package eDLineEditor;
 
+import java.io.*;
+
 public class EDLineEditor {
-	
-	/**
-	 * 接收用户控制台的输入，解析命令，根据命令参数做出相应处理。
-	 * 不需要任何提示输入，不要输出任何额外的内容。
-	 * 输出换行时，使用System.out.println()。或者换行符使用System.getProperty("line.separator")。
-	 * 
-	 * 待测方法为public static void main(String[] args)方法。args不传递参数，所有输入通过命令行进行。
-	 * 方便手动运行。
-	 * 
-	 * 说明：可以添加其他类和方法，但不要删除该文件，改动该方法名和参数，不要改动该文件包名和类名
-	 */
-	public static void main(String[] args) {
-		
+    public static BufferedReader br;
+
+	private static String fileName;
+	public static String getFileName() {
+		return fileName;
 	}
-	
+	public static void setFileName(String fileName) {
+		EDLineEditor.fileName = fileName;
+	}
+
+	public static void main(String[] args){
+		fileName = "";
+		Editor editor = new Editor();
+		Invoker invoker = new Invoker();
+        br = new BufferedReader(new InputStreamReader(new BufferedInputStream(System.in,100)));
+		String nextCmd = null;
+        try{
+            while ((nextCmd = br.readLine()) != null) {
+                try {
+                    Command command = invoker.getCommand(nextCmd);
+                    command.setEditor(editor);
+                    invoker.setCommand(command);
+                    invoker.run();
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        catch (IOException ignored){}
+    }
 }
