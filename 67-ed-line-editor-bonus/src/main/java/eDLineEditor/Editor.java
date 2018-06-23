@@ -13,7 +13,17 @@ public class Editor {
 
     private Deque<TextLinkedList> textAsListStack;
     private Deque<TextLinkedList> constantStack;
+
     private ArrayList<String> signsList = new ArrayList<>(26);
+    public void syncSignsList(){
+        for (Row row:textAsList){
+            for (String sign:row.getSigns()){
+                if (!signsList.contains(sign)){
+                    signsList.add(sign);
+                }
+            }
+        }
+    }
 
     private void pushAndState(TextLinkedList tll){
         TextLinkedList tllCopy = (TextLinkedList)tll.clone();
@@ -196,7 +206,7 @@ public class Editor {
             throw new Exception("?");
         }
         for (int row=fromIndex;row<=toIndex;row++){
-            moveList.add(new Row(textAsList.getRowContent(row)));
+            moveList.add(new Row(textAsList.getRowContent(row),textAsList.get(row).getSigns()));
         }
         textAsList.setIndexRow(moveList.getLast());
         textAsList.addRows(toTargetRow+1,moveList);
@@ -219,7 +229,7 @@ public class Editor {
         textAsList.clearIndexRow();
         LinkedList<Row> copyList = new LinkedList<>();
         for (int row=fromIndex;row<=toIndex;row++){
-            copyList.add(new Row(textAsList.get(row).getText()));
+            copyList.add(new Row(textAsList.get(row).getText(),textAsList.get(row).getSigns()));
         }
         textAsList.setIndexRow(copyList.getLast());
         textAsList.addRows(toTargetRow+1,copyList);
@@ -331,7 +341,7 @@ public class Editor {
             m.appendTail(sb);
             String afterReplace = sb.toString();
             if (!afterReplace.equals(text)){
-                Row row = new Row(afterReplace);
+                Row row = new Row(afterReplace,textAsList.get(i).getSigns());
                 textAsList.set(i,row);
                 textAsList.setIndexRow(row);
             }

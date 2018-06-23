@@ -26,6 +26,7 @@ public class EDLineEditor {
                     command.setEditor(editor);
                     invoker.setCommand(command);
                     invoker.run();
+                    editor.syncSignsList();
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }

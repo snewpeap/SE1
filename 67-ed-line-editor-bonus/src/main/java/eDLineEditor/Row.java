@@ -9,6 +9,9 @@ public class Row {
     }
 
     private ArrayList<String> signs;
+    public void setSigns(ArrayList<String> signs) {
+        this.signs = signs;
+    }
     public ArrayList<String> getSigns() {
         return signs;
     }
@@ -19,5 +22,10 @@ public class Row {
     public Row(String text) {
         this.text = text;
         signs = new ArrayList<>(26);
+    }
+
+    public Row(String text, ArrayList<String> signs) {
+        this.text = text;
+        this.signs = signs;
     }
 }
