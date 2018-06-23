@@ -21,7 +21,12 @@ public class EDLineEditor {
 		String nextCmd = null;
         try{
             while ((nextCmd = br.readLine()) != null) {
-                System.out.println(nextCmd);
+                String match = "test221k".concat("|test201k")
+                        .concat("|test222u").concat("|test224together")
+                        .concat("|test214u").concat("|test225together").concat("|test206k");
+                if (Thread.currentThread().getStackTrace()[2].getMethodName().matches(match)){
+                    System.out.println(">>>>>>>>>>"+nextCmd);
+                }
                 try {
                     Command command = invoker.getCommand(nextCmd);
                     command.setEditor(editor);
