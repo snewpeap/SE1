@@ -55,7 +55,9 @@ public class Editor {
                 while (sc.hasNextLine()) {
                     textAsList.add(new Row(sc.nextLine()));
                 }
-                textAsList.setIndexRow(textAsList.getLast());
+                if (textAsList.size() != 0) {
+                    textAsList.setIndexRow(textAsList.getLast());
+                }
                 pushAndState(textAsList);
                 isQuitable = true;
             } catch (IOException ignored) {}
@@ -390,6 +392,10 @@ public class Editor {
         }
         public void clearIndexRow(){
             this.indexRow = null;
+        }
+
+        public TextLinkedList() {
+            indexRow = null;
         }
 
         public String getText(){
