@@ -17,11 +17,11 @@ public class Command_sign implements Command {
 
     @Override
     public void execute() throws Exception {
-        String sign = rawCmd.contains("\n")?rawCmd.split("\n")[1]:rawCmd.substring(1);
+        String sign = rawCmd.contains("\n")?rawCmd.split("\n")[1]:rawCmd;
         if (!sign.matches("[a-z]")) {
             throw new Exception("?");
         }
-        sign = "\'" + (rawCmd.contains("\n")?rawCmd.split("\n")[1]:rawCmd.substring(1));
+        sign = "\'" + sign;
         HashMap<String,Integer> indexs = getFromAndToIndex(rawCmd,editor);
         int row = indexs.getOrDefault(TO,editor.getIndex());
         editor.setSign(row,sign);

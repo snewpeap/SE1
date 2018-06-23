@@ -14,7 +14,7 @@ public class Editor {
     private Deque<TextLinkedList> textAsListStack;
     private Deque<TextLinkedList> constantStack;
 
-    private ArrayList<String> signsList = new ArrayList<>(26);
+    private ArrayList<String> signsList;
     public void syncSignsList(){
         for (Row row:textAsList){
             for (String sign:row.getSigns()){
@@ -40,6 +40,7 @@ public class Editor {
     public Editor() {
         textAsListStack = new ArrayDeque<>();
         constantStack = new ArrayDeque<>();
+        signsList = new ArrayList<>(26);
     }
 
     /**
