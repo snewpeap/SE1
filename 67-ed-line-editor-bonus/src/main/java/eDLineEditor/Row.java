@@ -9,14 +9,14 @@ public class Row {
     }
 
     private ArrayList<String> signs;
-    public void setSigns(ArrayList<String> signs) {
-        this.signs = signs;
-    }
     public ArrayList<String> getSigns() {
         return signs;
     }
     public void addOneSign(String sign){
         signs.add(sign);
+    }
+    public void removeSign(String sign){
+        signs.remove(sign);
     }
 
     public Row(String text) {

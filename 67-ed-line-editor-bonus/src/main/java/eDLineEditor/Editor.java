@@ -243,13 +243,14 @@ public class Editor {
      * @param sign 标记
      */
     public void setSign(int row,String sign) throws Exception {
-        if (signsList.contains(sign)){
-            throw new Exception("?");
-        }
         Row r = textAsList.get(row);
+        if (signsList.contains(sign)){
+            textAsList.get(textAsList.getRowBySign(sign)).removeSign(sign);
+        }else {
+            signsList.add(sign);
+        }
         r.addOneSign(sign);
         textAsList.set(row,r);
-        signsList.add(sign);
     }
 
     /**
