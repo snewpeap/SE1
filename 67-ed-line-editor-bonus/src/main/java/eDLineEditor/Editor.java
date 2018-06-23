@@ -296,7 +296,9 @@ public class Editor {
             if (this.beReplaced==null||this.replaceBy==null||this.replaceMode ==null){
                 throw new Exception("?");
             }
-            realReplace(fromIndex, toIndex, this.beReplaced, this.replaceBy, this.replaceMode);
+            if (realReplace(fromIndex, toIndex, this.beReplaced, this.replaceBy, this.replaceMode)){
+                pushAndState(textAsList);
+            }
             return;
         }
         this.beReplaced = beReplaced;this.replaceBy = replaceBy;this.replaceMode = replaceMode;
