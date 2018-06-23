@@ -116,6 +116,7 @@ public class Editor {
      * @param toIndex 结束行数-1
      */
     public void delete(int fromIndex,int toIndex) throws Exception {
+        if (isQuitable) pushAndState(textAsList);
         if (fromIndex < 0) throw new Exception("?");
         textAsList.clearIndexRow();
         Row indexRow = textAsList.get(toIndex == textAsList.size()-1?fromIndex-1:toIndex+1);
