@@ -17,7 +17,7 @@ public class Command_sign implements Command {
 
     @Override
     public void execute() throws Exception {
-        String sign = rawCmd.contains("\n")?rawCmd.split("\n")[1]:rawCmd;
+        String sign = rawCmd.contains("\n")?rawCmd.split("\n")[1]:rawCmd.substring(1);
         if (!sign.matches("[a-z]")) {
             throw new Exception("?");
         }
