@@ -229,7 +229,7 @@ public class Editor {
         textAsList.clearIndexRow();
         LinkedList<Row> copyList = new LinkedList<>();
         for (int row=fromIndex;row<=toIndex;row++){
-            copyList.add(new Row(textAsList.get(row).getText(),textAsList.get(row).getSigns()));
+            copyList.add(new Row(textAsList.get(row).getText()));
         }
         textAsList.setIndexRow(copyList.getLast());
         textAsList.addRows(toTargetRow+1,copyList);
@@ -341,7 +341,7 @@ public class Editor {
             m.appendTail(sb);
             String afterReplace = sb.toString();
             if (!afterReplace.equals(text)){
-                Row row = new Row(afterReplace,textAsList.get(i).getSigns());
+                Row row = new Row(afterReplace);
                 textAsList.set(i,row);
                 textAsList.setIndexRow(row);
             }
