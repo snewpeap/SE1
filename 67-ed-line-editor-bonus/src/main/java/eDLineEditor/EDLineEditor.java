@@ -21,6 +21,7 @@ public class EDLineEditor {
 		String nextCmd = null;
         try{
             while ((nextCmd = br.readLine()) != null) {
+                System.out.println(nextCmd);
                 try {
                     Command command = invoker.getCommand(nextCmd);
                     command.setEditor(editor);
