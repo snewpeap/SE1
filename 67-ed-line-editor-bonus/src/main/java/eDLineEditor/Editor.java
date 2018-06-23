@@ -47,6 +47,10 @@ public class Editor {
                 textAsList.setIndexRow(textAsList.getLast());
                 pushAndState(textAsList);
                 isQuitable = true;
+                if (EDLineEditor.printFile){
+                    System.out.println(getText());
+                    EDLineEditor.br.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
