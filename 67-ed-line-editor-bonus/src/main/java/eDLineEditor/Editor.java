@@ -58,9 +58,7 @@ public class Editor {
                 textAsList.setIndexRow(textAsList.getLast());
                 pushAndState(textAsList);
                 isQuitable = true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException ignored) {}
         }
     }
 
