@@ -16,7 +16,7 @@ public class EDLineEditor {
 	public static void main(String[] args){
         byte[] buf = new byte[2056];
         try {
-            File file = new File("/var/ws/tmp/src/test");
+            File file = new File("/var/ws/tmp/src/test/java");
             File[] tempList = file.listFiles();
             System.out.println("该目录下对象个数："+tempList.length);
             for (File aTempList : tempList) {
