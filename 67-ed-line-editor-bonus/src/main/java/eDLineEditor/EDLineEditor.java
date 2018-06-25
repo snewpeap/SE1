@@ -16,11 +16,17 @@ public class EDLineEditor {
 	public static void main(String[] args){
         byte[] buf = new byte[2056];
         try {
-            FileInputStream fis = new FileInputStream("/var/ws/tmp/src/test/java/EDLineEditorBonusTest.java");
-            System.out.println("Get Stream");
-            int bytes = fis.read(buf, 0, 2056);
-            String str = new String(buf, 0, bytes);
-            System.out.println(str);
+            File file = new File("/var/ws/tmp");
+            File[] tempList = file.listFiles();
+            System.out.println("该目录下对象个数："+tempList.length);
+            for (File aTempList : tempList) {
+                if (aTempList.isFile()) {
+                    System.out.println("文  件：" + aTempList);
+                }
+                if (aTempList.isDirectory()) {
+                    System.out.println("文件夹：" + aTempList);
+                }
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
