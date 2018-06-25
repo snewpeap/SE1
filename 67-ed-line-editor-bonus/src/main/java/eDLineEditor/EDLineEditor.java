@@ -17,6 +17,7 @@ public class EDLineEditor {
         try {
             File file = new File("");
             System.out.println(file.getCanonicalPath());
+            System.out.println(Thread.currentThread().getStackTrace()[2].getFileName());
         } catch (Exception e) {
             System.out.println(e);
         }
