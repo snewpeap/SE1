@@ -116,6 +116,7 @@ public class Editor {
      * 实现d指令，删除文本
      * @param fromIndex 开始行数-1
      * @param toIndex 结束行数-1
+     * @throws Exception 开始行数<0
      */
     public void delete(int fromIndex,int toIndex) throws Exception {
         if (isQuitable) pushAndState(textAsList);
@@ -289,6 +290,16 @@ public class Editor {
         pushAndState(textAsList);
     }
 
+    /**
+     * 实现s指令，替换字符串。该方法为入口方法，预处理行数等参数
+     * @param fromIndex 开始行数-1
+     * @param toIndex 结束行数-1
+     * @param isTryAgain 是否重做上次的s指令内容
+     * @param beReplaced 被替换字符串
+     * @param replaceBy 替换字符串
+     * @param replaceMode 替换模式，-1为全局替换
+     * @throws Exception 开始行数<0
+     */
     public void replace(int fromIndex, int toIndex, boolean isTryAgain,
                         String beReplaced, String replaceBy, String replaceMode) throws Exception {
         if (fromIndex < 0) throw new Exception("?");
@@ -307,6 +318,14 @@ public class Editor {
         }
     }
 
+    /**
+     * 实现s指令，替换字符串。该方法为实际操作方法
+     * @param fromIndex 开始行数-1
+     * @param toIndex 结束行数-1
+     * @param beReplaced 被替换字符串
+     * @param replaceBy 替换字符串
+     * @throws Exception 没有任何替换时抛出"?"
+     */
     private boolean realReplace(int fromIndex, int toIndex,
                                 String beReplaced, String replaceBy, String replaceMode) throws Exception {
         int time = 1;int count = 0;
@@ -361,6 +380,9 @@ public class Editor {
         return true;
     }
 
+    /*
+    以下四个方法为Editor类向外暴露TextLinkedList的接口
+     */
     public int getRowBySign(String s) throws Exception {
         return textAsList.getRowBySign(s);
     }
@@ -380,7 +402,7 @@ public class Editor {
     /**
      *************************
      *
-     *      缓存的内部类
+     *    缓存文本的内部类
      *
      *************************
      */

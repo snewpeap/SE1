@@ -14,7 +14,13 @@ public class EDLineEditor {
 	}
 
 	public static void main(String[] args){
-		fileName = "";
+        try {
+            File file = new File("");
+            System.out.println(file.getCanonicalPath());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+		/*fileName = "";
 		Editor editor = new Editor();
 		Invoker invoker = new Invoker();
         br = new BufferedReader(new InputStreamReader(new BufferedInputStream(System.in,100)));
@@ -32,6 +38,6 @@ public class EDLineEditor {
                 }
             }
         }
-        catch (IOException ignored){}
+        catch (IOException ignored){}*/
     }
 }

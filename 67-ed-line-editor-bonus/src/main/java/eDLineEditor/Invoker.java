@@ -91,7 +91,7 @@ class Invoker {
      * @param nextCmd 待处理指令
      * @return 处理后指令
      */
-    private static String moveCommandToHead(Pattern p,String nextCmd){
+    private String moveCommandToHead(Pattern p, String nextCmd){
         StringBuilder sb = new StringBuilder(nextCmd);
         Matcher m = p.matcher(nextCmd);
         int start = 0;int end = 0;String cmd = "";
