@@ -1,16 +1,10 @@
 package eDLineEditor;
 
-public class Command_ed implements Command {
-    private Editor editor;
+public class Command_ed extends Command {
     private String rawCmd;
 
     public Command_ed(String rawCmd) {
         this.rawCmd = rawCmd;
-    }
-
-    @Override
-    public void setEditor(Editor editor) {
-        this.editor = editor;
     }
 
     @Override

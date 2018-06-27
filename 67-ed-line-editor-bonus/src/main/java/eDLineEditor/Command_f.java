@@ -1,28 +1,24 @@
 package eDLineEditor;
 
-public class Command_file implements Command {
+public class Command_f extends Command {
     private String rawCmd;
 
-    public Command_file(String rawCmd) {
+    public Command_f(String rawCmd) {
         this.rawCmd = rawCmd;
     }
 
     @Override
-    public void setEditor(Editor editor) {
-    }
-
-    @Override
-    public void execute() throws Exception {
+    public void execute() throws Wrong {
         String fileName = "";
-        if (rawCmd.contains(" ")){
+        if (rawCmd.contains(" ")) {
             fileName = rawCmd.split(" ")[1];
         }
         if (fileName.equals("")) {
             if (EDLineEditor.getFileName().equals("")) {
-                throw new Exception("?");
+                throw new Wrong("?");
             }
             System.out.println(EDLineEditor.getFileName());
-        }else {
+        } else {
             EDLineEditor.setFileName(fileName);
         }
     }

@@ -1,37 +1,45 @@
 package eDLineEditor;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class EDLineEditor {
     public static BufferedReader br;
 
     private static String fileName;
+
     public static String getFileName() {
         return fileName;
     }
+
     public static void setFileName(String fileName) {
         EDLineEditor.fileName = fileName;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         fileName = "";
         Editor editor = new Editor();
-        Invoker invoker = new Invoker();
-        br = new BufferedReader(new InputStreamReader(new BufferedInputStream(System.in,100)));
+        Commander commander = new Commander();
+        br = new BufferedReader(new InputStreamReader(new BufferedInputStream(System.in, 100)));
         String nextCmd = null;
-        try{
+        try {
             while ((nextCmd = br.readLine()) != null) {
                 try {
-                    Command command = invoker.getCommand(nextCmd);
-                    command.setEditor(editor);
-                    invoker.setCommand(command);
-                    invoker.run();
-                    editor.syncSignsList();
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
+                    Command Command = commander.getCommand(nextCmd);
+                    Command.setEditor(editor);
+                    commander.setCommand(Command);
+                    commander.run();
+                } catch (Wrong wrong) {
+                    System.out.println(wrong.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (IOException ignored){}
     }
 }

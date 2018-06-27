@@ -4,81 +4,94 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface Command {
-    String FROM = "fromIndex";String TO = "toIndex";
+public abstract class Command {
+    protected Editor editor;
 
-    void setEditor(Editor editor);
-    void execute() throws Exception;
+    public void setEditor(Editor editor) {
+        this.editor = editor;
+    }
 
-    default void getNoArgument(String rawCmd) throws Exception {
-        if (rawCmd.contains("\n")&&rawCmd.split("\n").length != 1){
-                throw new Exception("?");
+    public abstract void execute() throws Exception;
+
+    public void syncSignsList() {
+        editor.syncSignsList();
+    }
+
+    protected void getNoArgument(String rawCmd) throws Wrong {
+        if (rawCmd.contains("\n") && rawCmd.split("\n").length != 1) {
+            throw new Wrong("?");
         }
     }
 
-    default int getArgument(String rawCmd, Editor editor) throws Exception {
-        if (rawCmd.contains("\n")){
-            if (rawCmd.lastIndexOf('\n') == rawCmd.length()-1){
+    protected int getArgument(String rawCmd, Editor editor) throws Wrong {
+        if (rawCmd.contains("\n")) {
+            if (rawCmd.lastIndexOf('\n') == rawCmd.length() - 1) {
                 rawCmd = ".";
-            }else {
+            } else {
                 rawCmd = rawCmd.split("\n")[1];
             }
-        }else {
+        } else {
             Matcher m = Pattern.compile("^[mt](.*)").matcher(rawCmd);
             if (m.find()) {
                 rawCmd = m.group(1);
             }
         }
         Matcher m = Pattern.compile("((/[^/]+/|\\?[^?]+\\?|[.$]|[0-9]+|'[a-z])?([+\\-][0-9]+)?)").matcher(rawCmd);
-        if (m.find()){
-            return get(m.group(1),editor);
+        if (m.find()) {
+            return getSingleAddress(m.group(1), editor);
         }
-        return get(".",editor);
+        return getSingleAddress(".", editor);
     }
 
     /*
     获取操作对象行的Map
      */
-    default HashMap<String, Integer> getFromAndToIndex(String rawCmd, Editor editor) throws Exception {
-        HashMap<String,Integer> indexs = new HashMap<>(2);
+    protected HashMap<Position, Integer> getFromAndToIndex(String rawCmd, Editor editor) throws Wrong {
+        HashMap<Position, Integer> indexs = new HashMap<>(2);
         //未经过前面地址处理的指令不会带有\n
-        if (!rawCmd.contains("\n")){
+        if (!rawCmd.contains("\n")) {
             return indexs;
         }
-        int index = editor.getIndex();int total = editor.getTotal();
+        int index = editor.getIndex();
+        int total = editor.getTotal();
         Pattern p1 = Pattern.compile("^,?((/[^/]+/|\\?[^?]+\\?|[.$,;]|[0-9]+|'[a-z])?([+\\-][0-9]+)?)\n.*");
         Pattern p2 = Pattern.compile("((/[^/]+/|\\?[^?]+\\?|[.$]|[0-9]+|'[a-z])?([+\\-][0-9]+)?),((/[^/]+/|\\?[^?]+\\?|[.$]|[0-9]+|'[a-z])?([+\\-][0-9]+)?)\n.*");
         Pattern p3 = Pattern.compile(",\n");
-        if (rawCmd.matches(p3.toString())){
-            indexs.put(FROM,0); indexs.put(TO,total-1);
-        }else if (rawCmd.matches(p1.toString())){
+        if (rawCmd.matches(p3.toString())) {
+            indexs.put(Position.FROM, 0);
+            indexs.put(Position.TO, total - 1);
+        } else if (rawCmd.matches(p1.toString())) {
             Matcher m = p1.matcher(rawCmd);
             String s = ".";
             if (m.find()) {
                 s = m.group(1);
             }
-            int addr = get(s, editor);
-            switch (addr){
+            int addr = getSingleAddress(s, editor);
+            switch (addr) {
                 case -1:
-                    indexs.put(FROM,0);indexs.put(TO,total-1);
+                    indexs.put(Position.FROM, 0);
+                    indexs.put(Position.TO, total - 1);
                     break;
                 case -2:
-                    indexs.put(FROM,index);indexs.put(TO,total-1);
+                    indexs.put(Position.FROM, index);
+                    indexs.put(Position.TO, total - 1);
                     break;
                 default:
-                    indexs.put(TO,addr);
+                    indexs.put(Position.TO, addr);
             }
-        }else if (rawCmd.matches(p2.toString())){
+        } else if (rawCmd.matches(p2.toString())) {
             Matcher m = p2.matcher(rawCmd);
-            int fromIndex = 0;int toIndex = 0;
+            int fromIndex = 0;
+            int toIndex = 0;
             if (m.find()) {
-                fromIndex = get(m.group(1), editor);
-                toIndex = get(m.group(4), editor);
+                fromIndex = getSingleAddress(m.group(1), editor);
+                toIndex = getSingleAddress(m.group(4), editor);
             }
-            if (fromIndex > toIndex){
-                throw new Exception("?");
+            if (fromIndex > toIndex) {
+                throw new Wrong("?");
             }
-            indexs.put(FROM,fromIndex);indexs.put(TO,toIndex);
+            indexs.put(Position.FROM, fromIndex);
+            indexs.put(Position.TO, toIndex);
         }
         return indexs;
     }
@@ -86,14 +99,15 @@ public interface Command {
     /*
     获取单个地址
      */
-    default int get(String singleAddr, Editor editor) throws Exception {
-        int index = editor.getIndex();int total = editor.getTotal();
-        if (singleAddr.matches("/[^/]+/|\\?[^?]+\\?")){
+    protected int getSingleAddress(String singleAddress, Editor editor) throws Wrong {
+        int index = editor.getIndex();
+        int total = editor.getTotal();
+        if (singleAddress.matches("/[^/]+/|\\?[^?]+\\?")) {
             String text = editor.getText();
-            String str = singleAddr.matches("/[^/]+/")?singleAddr.split("/")[1]:singleAddr.split("\\?")[1];
+            String str = singleAddress.matches("/[^/]+/") ? singleAddress.split("/")[1] : singleAddress.split("\\?")[1];
             if (text.contains(str)) {
                 String[] arr = text.split(System.lineSeparator());
-                if (singleAddr.matches("/.+/")) {
+                if (singleAddress.matches("/.+/")) {
                     for (int i = index + 1; i < total; i++) {
                         if (arr[i].contains(str)) {
                             return i;
@@ -117,60 +131,72 @@ public interface Command {
                     }
                 }
             }
-        }else if (Pattern.compile("/.*[+\\-]+.*/-|\\?.*[+\\-]+.*\\?-|-/.*[+\\-]+.*/|-\\?.*[\\-]+.*\\?").matcher(singleAddr).find()){
+        } else if (Pattern.compile("/.*[+\\-]+.*/-|\\?.*[+\\-]+.*\\?-|-/.*[+\\-]+.*/|-\\?.*[\\-]+.*\\?").matcher(singleAddress).find()) {
             String[] arr = new String[2];
-            if (Pattern.compile("/.*[+\\-]+.*/-|\\?.*[+\\-]+.*\\?-").matcher(singleAddr).find()){
-                Matcher m = Pattern.compile("/.*[+\\-]+.*/-|\\?.*[+\\-]+.*\\?-").matcher(singleAddr);m.find();
-                arr[0] = singleAddr.substring(0,m.end()-1);arr[1] = singleAddr.substring(m.end());
-            }else{
-                Matcher m = Pattern.compile("-/.*[+\\-]+.*/|-\\?.*[\\-]+.*\\?").matcher(singleAddr);m.find();
-                arr[0] = singleAddr.substring(0,m.start());arr[1] = singleAddr.substring(m.start()+1);
+            if (Pattern.compile("/.*[+\\-]+.*/-|\\?.*[+\\-]+.*\\?-").matcher(singleAddress).find()) {
+                Matcher m = Pattern.compile("/.*[+\\-]+.*/-|\\?.*[+\\-]+.*\\?-").matcher(singleAddress);
+                m.find();
+                arr[0] = singleAddress.substring(0, m.end() - 1);
+                arr[1] = singleAddress.substring(m.end());
+            } else {
+                Matcher m = Pattern.compile("-/.*[+\\-]+.*/|-\\?.*[\\-]+.*\\?").matcher(singleAddress);
+                m.find();
+                arr[0] = singleAddress.substring(0, m.start());
+                arr[1] = singleAddress.substring(m.start() + 1);
             }
-            int target = get(arr[0], editor) - Integer.parseInt(arr[1]);
-            if (target >= 0){
+            int target = getSingleAddress(arr[0], editor) - Integer.parseInt(arr[1]);
+            if (target >= 0) {
                 return target;
             }
-        }else if (Pattern.compile("/.*[+\\-]+.*/\\+|\\?.*[+\\-]+.*\\?\\+|\\+/.*[+\\-]+.*/|\\+\\?.*[\\-]+.*\\?").matcher(singleAddr).find()){
+        } else if (Pattern.compile("/.*[+\\-]+.*/\\+|\\?.*[+\\-]+.*\\?\\+|\\+/.*[+\\-]+.*/|\\+\\?.*[\\-]+.*\\?").matcher(singleAddress).find()) {
             String[] arr = new String[2];
-            if (Pattern.compile("/.*[+\\-]+.*/\\+|\\?.*[+\\-]+.*\\?\\+").matcher(singleAddr).find()){
-                Matcher m = Pattern.compile("/.*[+\\-]+.*/\\+|\\?.*[+\\-]+.*\\?\\+").matcher(singleAddr);m.find();
-                arr[0] = singleAddr.substring(0,m.end()-1);arr[1] = singleAddr.substring(m.end());
-            }else{
-                Matcher m = Pattern.compile("\\+/.*[+\\-]+.*/|\\+\\?.*[\\-]+.*\\?").matcher(singleAddr);m.find();
-                arr[0] = singleAddr.substring(0,m.start());arr[1] = singleAddr.substring(m.start()+1);
+            if (Pattern.compile("/.*[+\\-]+.*/\\+|\\?.*[+\\-]+.*\\?\\+").matcher(singleAddress).find()) {
+                Matcher m = Pattern.compile("/.*[+\\-]+.*/\\+|\\?.*[+\\-]+.*\\?\\+").matcher(singleAddress);
+                m.find();
+                arr[0] = singleAddress.substring(0, m.end() - 1);
+                arr[1] = singleAddress.substring(m.end());
+            } else {
+                Matcher m = Pattern.compile("\\+/.*[+\\-]+.*/|\\+\\?.*[\\-]+.*\\?").matcher(singleAddress);
+                m.find();
+                arr[0] = singleAddress.substring(0, m.start());
+                arr[1] = singleAddress.substring(m.start() + 1);
             }
-            int target = get(arr[0], editor) + Integer.parseInt(arr[1]);
-            if (target < total){
+            int target = getSingleAddress(arr[0], editor) + Integer.parseInt(arr[1]);
+            if (target < total) {
                 return target;
             }
-        }else if (singleAddr.contains("-")){
-            String[] arr = singleAddr.split("-");
-            int target = get(arr[0], editor) - Integer.parseInt(arr[1]);
-            if (target >= 0){
+        } else if (singleAddress.contains("-")) {
+            String[] arr = singleAddress.split("-");
+            int target = getSingleAddress(arr[0], editor) - Integer.parseInt(arr[1]);
+            if (target >= 0) {
                 return target;
             }
-        }else if (singleAddr.contains("+")){
-            String[] arr = singleAddr.split("\\+");
-            int target = get(arr[0], editor) + Integer.parseInt(arr[1]);
-            if (target < total){
+        } else if (singleAddress.contains("+")) {
+            String[] arr = singleAddress.split("\\+");
+            int target = getSingleAddress(arr[0], editor) + Integer.parseInt(arr[1]);
+            if (target < total) {
                 return target;
             }
-        }else if (singleAddr.matches("'[a-z]")){
-            return editor.getRowBySign(singleAddr);
-        }else if (singleAddr.equals("$")){
-            return total-1;
-        }else if (singleAddr.equals(".")||singleAddr.equals("")){
+        } else if (singleAddress.matches("'[a-z]")) {
+            return editor.getRowBySign(singleAddress);
+        } else if (singleAddress.equals("$")) {
+            return total - 1;
+        } else if (singleAddress.equals(".") || singleAddress.equals("")) {
             return index;
-        }else if (singleAddr.equals(",")){
+        } else if (singleAddress.equals(",")) {
             return -1;
-        }else if (singleAddr.equals(";")){
+        } else if (singleAddress.equals(";")) {
             return -2;
-        }else if (singleAddr.matches("[0-9]+")){
-            int row = Integer.parseInt(singleAddr)-1;
+        } else if (singleAddress.matches("[0-9]+")) {
+            int row = Integer.parseInt(singleAddress) - 1;
             if (row < total) {
                 return row;
             }
         }
-        throw new Exception("?");
+        throw new Wrong("?");
+    }
+
+    public enum Position {
+        FROM, TO
     }
 }
