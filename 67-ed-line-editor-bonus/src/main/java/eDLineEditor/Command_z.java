@@ -1,7 +1,7 @@
 package eDLineEditor;
 
 public class Command_z extends Command {
-    private String rawCmd;
+    private final String rawCmd;
 
     public Command_z(String rawCmd) {
         this.rawCmd = rawCmd;

@@ -3,8 +3,8 @@ package eDLineEditor;
 import java.util.ArrayList;
 
 public class Row {
-    private String text;
-    private ArrayList<String> signs;
+    private final String text;
+    private final ArrayList<String> signs;
 
     public Row(String text) {
         this.text = text;

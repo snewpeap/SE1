@@ -30,14 +30,14 @@ public class Command_s extends Command {
 
     public ArrayList<String> getArgument() throws Wrong {
         Matcher m;
-        ArrayList<String> arguments = null;
+        ArrayList<String> arguments;
         if (rawCmd.contains("\n")) {
             m = Pattern.compile(".+\n(.+)").matcher(rawCmd);
         } else {
             m = Pattern.compile("(.+)").matcher(rawCmd);
         }
         if (!m.matches()) {
-            return arguments;
+            return null;
         }
         String arg = m.group(1);
         rawCmd = rawCmd.substring(0, m.start(1));

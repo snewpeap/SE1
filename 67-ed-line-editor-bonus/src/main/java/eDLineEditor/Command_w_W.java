@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Command_w_W extends Command {
-    private String rawCmd;
-    private boolean isAppend;
+    private final String rawCmd;
+    private final boolean isAppend;
 
     public Command_w_W(String rawCmd, boolean isAppend) {
         this.rawCmd = rawCmd;

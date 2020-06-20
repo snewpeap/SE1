@@ -3,7 +3,7 @@ package eDLineEditor;
 import java.util.HashMap;
 
 public class Command_t extends Command {
-    private String rawCmd;
+    private final String rawCmd;
 
     public Command_t(String rawCmd) {
         this.rawCmd = rawCmd;

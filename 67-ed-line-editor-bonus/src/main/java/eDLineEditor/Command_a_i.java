@@ -1,8 +1,8 @@
 package eDLineEditor;
 
 public class Command_a_i extends Command {
-    private String rawCmd;
-    private boolean isAddAfter;
+    private final String rawCmd;
+    private final boolean isAddAfter;
 
     public Command_a_i(String rawCmd, boolean isAddAfter) {
         this.rawCmd = rawCmd;

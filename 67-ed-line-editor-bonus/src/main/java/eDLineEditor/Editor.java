@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,10 +12,10 @@ import java.util.regex.Pattern;
 public class Editor {
     private TextLinkedList textAsList;
 
-    private Deque<TextLinkedList> textAsListStack;
-    private Deque<TextLinkedList> constantStack;
+    private final Deque<TextLinkedList> textAsListStack;
+    private final Deque<TextLinkedList> constantStack;
 
-    private ArrayList<String> signsList;
+    private final ArrayList<String> signsList;
     private boolean isQuitable = false;
     private String beReplaced = null;
     private String replaceBy = null;
@@ -172,13 +173,14 @@ public class Editor {
     public void writeFile(int fromIndex, int toIndex, String fileName, boolean isAppend) throws Exception {
         if (fromIndex < 0) throw new Wrong("?");
         File file = new File(fileName);
+        //noinspection ResultOfMethodCallIgnored
         file.createNewFile();
         StringBuilder textBuilder = new StringBuilder();
         for (int row = fromIndex; row <= toIndex; row++) {
             textBuilder.append(textAsList.getRowContent(row).concat(System.lineSeparator()));
         }
         FileOutputStream fos = new FileOutputStream(file, isAppend);
-        fos.write(textBuilder.toString().getBytes("utf-8"));
+        fos.write(textBuilder.toString().getBytes(StandardCharsets.UTF_8));
         fos.close();
         textAsListStack.clear();
     }
@@ -421,7 +423,7 @@ public class Editor {
      *
      * ************************
      */
-    private class TextLinkedList extends LinkedList<Row> {
+    private static class TextLinkedList extends LinkedList<Row> {
         private Row indexRow;
 
         public TextLinkedList() {
@@ -465,8 +467,12 @@ public class Editor {
             return get(index).getText();
         }
 
-        public boolean addRows(int start, Collection<Row> c) {
-            return size() == 0 ? addAll(c) : addAll(start, c);
+        public void addRows(int start, Collection<Row> c) {
+            if (size() == 0) {
+                addAll(c);
+            } else {
+                addAll(start, c);
+            }
         }
 
         public void deleteRows(int fromIndex, int toIndex) {

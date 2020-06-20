@@ -1,7 +1,7 @@
 package eDLineEditor;
 
 public class Command_k extends Command {
-    private String rawCmd;
+    private final String rawCmd;
 
     public Command_k(String rawCmd) {
         this.rawCmd = rawCmd;
@@ -13,7 +13,7 @@ public class Command_k extends Command {
         if (!sign.matches("[a-z]")) {
             throw new Wrong("?");
         }
-        editor.setSign(getFromAndToIndex(rawCmd, editor).getOrDefault(Position.TO, editor.getIndex()), "\'" + sign);
+        editor.setSign(getFromAndToIndex(rawCmd, editor).getOrDefault(Position.TO, editor.getIndex()), "'" + sign);
     }
 
 }

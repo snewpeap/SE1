@@ -1,7 +1,7 @@
 package eDLineEditor;
 
 public class Command_printOrder extends Command {
-    private String rawCmd;
+    private final String rawCmd;
 
     public Command_printOrder(String rawCmd) {
         this.rawCmd = rawCmd;

@@ -47,10 +47,10 @@ public abstract class Command {
     获取操作对象行的Map
      */
     protected HashMap<Position, Integer> getFromAndToIndex(String rawCmd, Editor editor) throws Wrong {
-        HashMap<Position, Integer> indexs = new HashMap<>(2);
+        HashMap<Position, Integer> indexes = new HashMap<>(2);
         //未经过前面地址处理的指令不会带有\n
         if (!rawCmd.contains("\n")) {
-            return indexs;
+            return indexes;
         }
         int index = editor.getIndex();
         int total = editor.getTotal();
@@ -58,8 +58,8 @@ public abstract class Command {
         Pattern p2 = Pattern.compile("((/[^/]+/|\\?[^?]+\\?|[.$]|[0-9]+|'[a-z])?([+\\-][0-9]+)?),((/[^/]+/|\\?[^?]+\\?|[.$]|[0-9]+|'[a-z])?([+\\-][0-9]+)?)\n.*");
         Pattern p3 = Pattern.compile(",\n");
         if (rawCmd.matches(p3.toString())) {
-            indexs.put(Position.FROM, 0);
-            indexs.put(Position.TO, total - 1);
+            indexes.put(Position.FROM, 0);
+            indexes.put(Position.TO, total - 1);
         } else if (rawCmd.matches(p1.toString())) {
             Matcher m = p1.matcher(rawCmd);
             String s = ".";
@@ -69,15 +69,15 @@ public abstract class Command {
             int addr = getSingleAddress(s, editor);
             switch (addr) {
                 case -1:
-                    indexs.put(Position.FROM, 0);
-                    indexs.put(Position.TO, total - 1);
+                    indexes.put(Position.FROM, 0);
+                    indexes.put(Position.TO, total - 1);
                     break;
                 case -2:
-                    indexs.put(Position.FROM, index);
-                    indexs.put(Position.TO, total - 1);
+                    indexes.put(Position.FROM, index);
+                    indexes.put(Position.TO, total - 1);
                     break;
                 default:
-                    indexs.put(Position.TO, addr);
+                    indexes.put(Position.TO, addr);
             }
         } else if (rawCmd.matches(p2.toString())) {
             Matcher m = p2.matcher(rawCmd);
@@ -90,15 +90,16 @@ public abstract class Command {
             if (fromIndex > toIndex) {
                 throw new Wrong("?");
             }
-            indexs.put(Position.FROM, fromIndex);
-            indexs.put(Position.TO, toIndex);
+            indexes.put(Position.FROM, fromIndex);
+            indexes.put(Position.TO, toIndex);
         }
-        return indexs;
+        return indexes;
     }
 
     /*
     获取单个地址
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     protected int getSingleAddress(String singleAddress, Editor editor) throws Wrong {
         int index = editor.getIndex();
         int total = editor.getTotal();

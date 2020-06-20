@@ -1,7 +1,7 @@
 package eDLineEditor;
 
 public class Command_q_Q extends Command {
-    private boolean isForceQuit;
+    private final boolean isForceQuit;
 
     public Command_q_Q(boolean isForceQuit) {
         this.isForceQuit = isForceQuit;

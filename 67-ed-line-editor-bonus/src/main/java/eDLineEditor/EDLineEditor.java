@@ -23,13 +23,13 @@ public class EDLineEditor {
         Editor editor = new Editor();
         Commander commander = new Commander();
         br = new BufferedReader(new InputStreamReader(new BufferedInputStream(System.in, 100)));
-        String nextCmd = null;
+        String nextCmd;
         try {
             while ((nextCmd = br.readLine()) != null) {
                 try {
-                    Command Command = commander.getCommand(nextCmd);
-                    Command.setEditor(editor);
-                    commander.setCommand(Command);
+                    Command command = commander.getCommand(nextCmd);
+                    command.setEditor(editor);
+                    commander.setCommand(command);
                     commander.run();
                 } catch (Wrong wrong) {
                     System.out.println(wrong.getMessage());
